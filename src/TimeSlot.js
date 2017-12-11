@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 import cn from 'classnames'
 import { elementType } from './utils/propTypes'
-
 
 export default class TimeSlot extends Component {
   static propTypes = {
@@ -18,13 +17,13 @@ export default class TimeSlot extends Component {
   static defaultProps = {
     isNow: false,
     showLabel: false,
-    content: ''
+    content: '',
   }
 
   render() {
-    const { value, slotPropGetter } = this.props;
-    const Wrapper = this.props.dayWrapperComponent;
-    const { className, style } = (slotPropGetter && slotPropGetter(value)) || {};
+    const { value, slotPropGetter } = this.props
+    const Wrapper = this.props.dayWrapperComponent
+    const { className, style } = (slotPropGetter && slotPropGetter(value)) || {}
 
     return (
       <Wrapper value={value}>
@@ -34,12 +33,10 @@ export default class TimeSlot extends Component {
             'rbc-time-slot',
             className,
             this.props.showLabel && 'rbc-label',
-            this.props.isNow && 'rbc-now',
+            this.props.isNow && 'rbc-now'
           )}
         >
-        {this.props.showLabel &&
-          <span>{this.props.content}</span>
-        }
+          {this.props.showLabel && <span>{this.props.content}</span>}
         </div>
       </Wrapper>
     )
