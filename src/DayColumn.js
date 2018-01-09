@@ -35,6 +35,12 @@ class DayColumn extends React.Component {
     min: PropTypes.instanceOf(Date).isRequired,
     max: PropTypes.instanceOf(Date).isRequired,
     now: PropTypes.instanceOf(Date),
+    isOff: PropTypes.bool,
+    workingHourRange: PropTypes.shape({
+      from: PropTypes.number,
+      to: PropTypes.number,
+    }),
+    group: PropTypes.string,
 
     rtl: PropTypes.bool,
     titleAccessor: accessor,
@@ -98,9 +104,12 @@ class DayColumn extends React.Component {
       max,
       step,
       now,
+      isOff,
       selectRangeFormat,
       culture,
       dayPropGetter,
+      workingHourRange,
+      group,
       ...props
     } = this.props
 
@@ -118,11 +127,9 @@ class DayColumn extends React.Component {
     return (
       <TimeColumn
         {...props}
-        className={cn(
-          'rbc-day-slot',
-          className,
-          dates.isToday(max) && 'rbc-today'
-        )}
+        group={group}
+        workingHourRange={workingHourRange}
+        className={cn('rbc-day-slot', className, isOff && 'rbc-off')}
         style={style}
         now={now}
         min={min}
@@ -230,7 +237,7 @@ class DayColumn extends React.Component {
               [isRtl ? 'right' : 'left']: `${Math.max(0, xOffset)}%`,
               width: `${width}%`,
             }}
-            title={(typeof label === 'string' ? label + ': ' : '') + title}
+            title={title + (typeof label === 'string' ? ': ' + label : '')}
             onClick={e => this._select(event, e)}
             onDoubleClick={e => this._doubleClick(event, e)}
             className={cn('rbc-event', className, {
@@ -241,7 +248,6 @@ class DayColumn extends React.Component {
               'rbc-event-continues-day-after': _continuesAfter,
             })}
           >
-            <div className="rbc-event-label">{label}</div>
             <div className="rbc-event-content">
               {EventComponent ? (
                 <EventComponent event={event} title={title} />
@@ -249,6 +255,7 @@ class DayColumn extends React.Component {
                 title
               )}
             </div>
+            <div className="rbc-event-label">{label}</div>
           </div>
         </EventWrapper>
       )

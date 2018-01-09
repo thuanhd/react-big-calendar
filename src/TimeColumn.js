@@ -15,6 +15,12 @@ export default class TimeColumn extends Component {
     now: PropTypes.instanceOf(Date).isRequired,
     min: PropTypes.instanceOf(Date).isRequired,
     max: PropTypes.instanceOf(Date).isRequired,
+    workingHourRange: PropTypes.shape({
+      from: PropTypes.number,
+      to: PropTypes.number,
+    }),
+    group: PropTypes.string,
+
     showLabels: PropTypes.bool,
     timeGutterFormat: dateFormat,
     type: PropTypes.string.isRequired,
@@ -43,14 +49,23 @@ export default class TimeColumn extends Component {
       slotPropGetter,
       dayPropGetter,
       timeGutterFormat,
+      workingHourRange,
       culture,
+      group,
     } = this.props
-
+    let hour = date.getHours()
+    let isWorkingHour =
+      !workingHourRange ||
+      (workingHourRange &&
+        hour >= workingHourRange.from &&
+        hour <= workingHourRange.to)
     return (
       <TimeSlotGroup
         key={key}
+        isWorkingHour={isWorkingHour}
         isNow={isNow}
         value={date}
+        group={group}
         step={step}
         slotPropGetter={slotPropGetter}
         dayPropGetter={dayPropGetter}
@@ -98,7 +113,6 @@ export default class TimeColumn extends Component {
 
       date = next
     }
-
     return (
       <div className={cn(className, 'rbc-time-column')} style={style}>
         {renderedSlots}

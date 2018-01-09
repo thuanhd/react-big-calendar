@@ -4,7 +4,7 @@
 
 .rbc-calendar {
   box-sizing: border-box;
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -48,12 +48,12 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  padding: 0 3px;
   text-align: center;
   vertical-align: middle;
   font-weight: bold;
-  font-size: 90%;
   min-height: 0;
+  padding: 10px 5px;
+  background: #fff;
 
   > a {
     &, &:active, &:visited {
@@ -74,6 +74,31 @@
   background-color: @today-highlight-bg;
 }
 
+.rbc-off {
+  background-color: @off-bg;
+}
+
+.rbc-off > .rbc-off {
+  background-color: @trans-bg;
+}
+
+.rbc-hide {
+  visibility: hidden;
+  height: 0;
+  min-height: 0 !important;
+}
+
+.rbc-groupName {
+  font-weight: normal;
+  font-size: 85%;
+  min-height: 36px;
+}
+
+.rbc-groupName > span {
+  word-wrap: break-word;
+  display: block;
+  white-space: normal;
+}
 
 @import './toolbar.less';
 @import './event.less';

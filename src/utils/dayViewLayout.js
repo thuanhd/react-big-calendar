@@ -267,7 +267,7 @@ export default function getStyledEvents({
   step,
   timeslots,
 }) {
-  let OVERLAP_MULTIPLIER = 0.3
+  let OVERLAP_MULTIPLIER = 0.0
   let events = sort(unsortedEvents, { startAccessor, endAccessor })
   let helperArgs = {
     events,

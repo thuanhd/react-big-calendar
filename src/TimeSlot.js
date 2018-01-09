@@ -7,6 +7,7 @@ export default class TimeSlot extends Component {
   static propTypes = {
     dayWrapperComponent: elementType,
     value: PropTypes.instanceOf(Date).isRequired,
+    group: PropTypes.string,
     isNow: PropTypes.bool,
     showLabel: PropTypes.bool,
     content: PropTypes.string,
@@ -22,12 +23,12 @@ export default class TimeSlot extends Component {
   }
 
   render() {
-    const { value, slotPropGetter, resource } = this.props
+    const { value, slotPropGetter, resource, group } = this.props
     const Wrapper = this.props.dayWrapperComponent
     const { className, style } = (slotPropGetter && slotPropGetter(value)) || {}
 
     return (
-      <Wrapper value={value} resource={resource}>
+      <Wrapper value={value} group={group} resource={resource}>
         <div
           style={style}
           className={cn(

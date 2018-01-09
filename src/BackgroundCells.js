@@ -29,6 +29,7 @@ class BackgroundCells extends React.Component {
     onSelectStart: PropTypes.func,
 
     range: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
+    dayOffs: PropTypes.arrayOf(PropTypes.number),
     rtl: PropTypes.bool,
     type: PropTypes.string,
   }
@@ -59,6 +60,7 @@ class BackgroundCells extends React.Component {
   render() {
     let {
       range,
+      dayOffs,
       cellWrapperComponent: Wrapper,
       dayPropGetter,
       date: currentDate,
@@ -73,7 +75,7 @@ class BackgroundCells extends React.Component {
             (dayPropGetter && dayPropGetter(date)) || {}
           const segmStyles = segStyle(1, range.length)
           const styles = Object.assign({}, dayStyles, segmStyles)
-
+          let dateWeek = dates.getDateWeek(date)
           return (
             <Wrapper key={index} value={date} range={range}>
               <div
@@ -83,6 +85,7 @@ class BackgroundCells extends React.Component {
                   className,
                   selected && 'rbc-selected-cell',
                   dates.isToday(date) && 'rbc-today',
+                  dayOffs.includes(dateWeek) && 'rbc-off',
                   currentDate &&
                     dates.month(currentDate) !== dates.month(date) &&
                     'rbc-off-range-bg'

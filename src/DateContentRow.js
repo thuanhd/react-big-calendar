@@ -23,6 +23,7 @@ const propTypes = {
   date: PropTypes.instanceOf(Date),
   events: PropTypes.array.isRequired,
   range: PropTypes.array.isRequired,
+  dayOffs: PropTypes.arrayOf(PropTypes.number),
 
   rtl: PropTypes.bool,
   renderForMeasure: PropTypes.bool,
@@ -143,6 +144,7 @@ class DateContentRow extends React.Component {
       rtl,
       events,
       range,
+      dayOffs,
       className,
       selectable,
       dayPropGetter,
@@ -187,6 +189,7 @@ class DateContentRow extends React.Component {
           date={date}
           rtl={rtl}
           range={range}
+          dayOffs={dayOffs}
           selectable={selectable}
           container={this.getContainer}
           dayPropGetter={dayPropGetter}

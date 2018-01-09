@@ -4,13 +4,16 @@ import TimeSlot from './TimeSlot'
 import date from './utils/dates.js'
 import localizer from './localizer'
 import { elementType, dateFormat } from './utils/propTypes'
+import cn from 'classnames'
 
 export default class TimeSlotGroup extends Component {
   static propTypes = {
     dayWrapperComponent: elementType,
     timeslots: PropTypes.number.isRequired,
+    isWorkingHour: PropTypes.bool,
     step: PropTypes.number.isRequired,
     value: PropTypes.instanceOf(Date).isRequired,
+    group: PropTypes.string,
     showLabels: PropTypes.bool,
     isNow: PropTypes.bool,
     slotPropGetter: PropTypes.func,
@@ -33,6 +36,7 @@ export default class TimeSlotGroup extends Component {
       culture,
       resource,
       slotPropGetter,
+      group,
     } = this.props
     return (
       <TimeSlot
@@ -45,6 +49,7 @@ export default class TimeSlotGroup extends Component {
         isNow={isNow}
         resource={resource}
         value={value}
+        group={group}
       />
     )
   }
@@ -65,6 +70,11 @@ export default class TimeSlotGroup extends Component {
     return ret
   }
   render() {
-    return <div className="rbc-timeslot-group">{this.renderSlices()}</div>
+    const { isWorkingHour } = this.props
+    return (
+      <div className={cn('rbc-timeslot-group', isWorkingHour || 'rbc-off')}>
+        {this.renderSlices()}
+      </div>
+    )
   }
 }

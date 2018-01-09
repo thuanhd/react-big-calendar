@@ -714,7 +714,12 @@ class Calendar extends React.Component {
     )
 
     let CalToolbar = components.toolbar || Toolbar
-    const label = View.title(current, { formats, culture, length })
+    const label = View.title(current, {
+      formats,
+      culture,
+      length,
+      dateRange: this.props.visibleDates,
+    })
 
     return (
       <div
@@ -729,7 +734,7 @@ class Calendar extends React.Component {
             date={current}
             view={view}
             views={names}
-            label={label}
+            label={''}
             onViewChange={this.handleViewChange}
             onNavigate={this.handleNavigate}
             messages={messages}

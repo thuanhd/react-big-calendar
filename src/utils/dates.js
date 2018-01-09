@@ -161,6 +161,10 @@ let dates = {
   tomorrow() {
     return dates.add(dates.startOf(new Date(), 'day'), 1, 'day')
   },
+
+  getDateWeek(date) {
+    return date.getDay() === 0 ? 7 : date.getDay()
+  },
 }
 
 export default dates
