@@ -81,6 +81,20 @@ class Dnd extends React.Component {
     this.props.onCellClicked && this.props.onCellClicked(event)
   }
 
+  resizeEvent = (resizeType, { event, start, end }) => {
+    const { events } = this.state
+
+    const nextEvents = events.map(existingEvent => {
+      return existingEvent.id == event.id
+        ? { ...existingEvent, start, end }
+        : existingEvent
+    })
+
+    this.setState({
+      events: nextEvents,
+    })
+  }
+
   render() {
     let from, to
     let d = new Date()
@@ -136,8 +150,8 @@ class Dnd extends React.Component {
         selectable
         events={this.props.dataSet || []}
         onEventDrop={({ event, start, end, group }) =>
-          this.moveEvent({ event, start, end, group })
-        }
+          this.moveEvent({ event, start, end, group })}
+        onEventResize={this.resizeEvent}
         onSelectEvent={event => this.selectEvent(event)}
         onSelectSlot={slotInfo => this.selectCell(slotInfo)}
         step={15}

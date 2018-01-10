@@ -93,6 +93,7 @@ DraggableBackgroundWrapper.propTypes = propTypes
 
 DraggableBackgroundWrapper.contextTypes = {
   onEventDrop: PropTypes.func,
+  onEventResize: PropTypes.func,
   dragDropManager: PropTypes.object,
   startAccessor: accessor,
   endAccessor: accessor,
@@ -111,20 +112,64 @@ function createWrapper(type) {
     drop(_, monitor, { props, context }) {
       const event = monitor.getItem()
       const { value, resource, group } = props
-      const { onEventDrop, startAccessor, endAccessor } = context
+      const { onEventDrop, onEventResize, startAccessor, endAccessor } = context
       const start = get(event, startAccessor)
       const end = get(event, endAccessor)
 
-      onEventDrop({
-        event,
-        ...getEventTimes(start, end, value, type),
+      if (monitor.getItemType() === 'event') {
+        onEventDrop({
+          event,
         group,
+          ...getEventTimes(start, end, value, type),
         ...(resource && { resource }),
-      })
+        })
+      }
+
+      if (monitor.getItemType() === 'resize') {
+        switch (event.type) {
+          case 'resizeTop': {
+            return onEventResize('drop', {
+              event,
+              start: value,
+              end: event.end,
+            })
+          }
+          case 'resizeBottom': {
+            const nextEnd = dates.add(value, 30, 'minutes')
+            return onEventResize('drop', {
+              event,
+              start: event.start,
+              end: nextEnd,
+            })
+          }
+          case 'resizeLeft': {
+            return onEventResize('drop', {
+              event,
+              start: value,
+              end: event.end,
+            })
+          }
+          case 'resizeRight': {
+            const nextEnd = dates.add(value, 1, 'day')
+            return onEventResize('drop', {
+              event,
+              start: event.start,
+              end: nextEnd,
+            })
+          }
+        }
+
+        // Catch all
+        onEventResize('drop', {
+          event,
+          start: event.start,
+          end: value,
+        })
+      }
     },
   }
 
-  return DropTarget(['event'], dropTarget, collectTarget)(
+  return DropTarget(['event', 'resize'], dropTarget, collectTarget)(
     DraggableBackgroundWrapper
   )
 }
