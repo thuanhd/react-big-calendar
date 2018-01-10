@@ -69,13 +69,14 @@ class Example extends React.Component {
   }
 
   handleItemChanged(event) {
-    const idx = this.state.dateSet.map(d => d.id).indexOf(event.id)
 
-    const newDataset = Object.assign([], this.state.dateSet)
-    newDataset.splice(idx, 1, event)
-    this.setState({
-      dateSet: newDataset,
-    })
+    for(var i =0 ;i<this.state.dateSet.length;i++){
+      if(this.state.dateSet[i].id === event.id){
+        this.state.dateSet[i] = {...event};
+      }
+    }
+
+    this.forceUpdate();
   }
 
   handleItemClicked(event) {

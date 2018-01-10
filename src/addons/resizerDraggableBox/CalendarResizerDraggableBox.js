@@ -35,7 +35,7 @@ export default DragSource(
     },
     endDrag(props) { // pass special state to mark the end of the drag
       return { endDrag: true };
-    },
+    }
   },
   (connect, monitor) => ({
     connectDragSource: connect.dragSource(),

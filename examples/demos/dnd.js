@@ -85,8 +85,23 @@ class Dnd extends React.Component {
     this.props.onCellClicked && this.props.onCellClicked(event)
   }
 
-  onEventResize(itemType, {event, value, start, end}) { // called each time you move/resize an event
-    
+  onEventResize(itemType, {event, value, start, end, isPassAbove}) { // called each time you move/resize an event
+    // this.moveEvent({event, start, end});
+    if (itemType === 'event-resize') {
+      let ele = $('#' + event.id);
+      let hid = ele.find('.step-height').val();
+      const duration2 = dates.diff(start, end);
+      let newHeight = duration2 * hid;
+      ele.css('height', newHeight + '%');
+
+      if (isPassAbove) {
+        let top = ele.find('.step-top').val();
+        let newTop = top - newHeight;
+        ele.css('top', newTop + '%');
+
+      }
+    }
+
   }
 
   render() {
@@ -147,11 +162,12 @@ class Dnd extends React.Component {
         onEventDrop={({event, start, end, group}) =>
           this.moveEvent({event, start, end, group})
         }
-        onEventResize={(itemType, {event, value, start, end}) => this.onEventResize(itemType, {
+        onEventResize={(itemType, {event, value, start, end, isPassAbove}) => this.onEventResize(itemType, {
           event,
           value,
           start,
-          end
+          end,
+          isPassAbove
         })}
         onSelectEvent={event => this.selectEvent(event)}
         onSelectSlot={slotInfo => this.selectCell(slotInfo)}

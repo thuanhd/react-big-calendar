@@ -125,7 +125,8 @@ function getEventResizeTimes(event, value, startAccessor) { // calculate new sta
   return {
     event: event,
     start,
-    end
+    end,
+    isPassAbove
   };
 }
 function createWrapper(type) {
@@ -152,11 +153,11 @@ function createWrapper(type) {
       } else if (itemType === 'event') {
         var start = get(event, startAccessor);
         var end = get(event, endAccessor);
-        propsCallback = Object.assign({
+        propsCallback = {
           event: event,
           ...getEventTimes(start, end, value, type),
           group
-        });
+        };
 
       }
 
@@ -170,9 +171,15 @@ function createWrapper(type) {
       const { onEventResize, startAccessor } = context
 
 
-      var propsCallback;
-      if (itemType === 'event-resize') {
-        propsCallback = getEventResizeTimes(event, value, startAccessor);
+      if ((!window.reactBigCalendarResizerValue || window.reactBigCalendarResizerValue.toString() !== value.toString())) { // TODO > find a better solution
+        window.reactBigCalendarResizerValue = value; // store value to not trigger event each time
+
+        var propsCallback;
+        if (itemType === 'event-resize') {
+          propsCallback = getEventResizeTimes(event, value, startAccessor);
+        } else if (itemType === 'event') {
+          propsCallback = { event, value };
+        }
         onEventResize(itemType, propsCallback); // callback
       }
     }

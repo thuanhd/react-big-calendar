@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { DragDropContext } from 'react-dnd'
+import {DragDropContext} from 'react-dnd'
 import cn from 'classnames'
 
-import { accessor } from '../../utils/propTypes'
+import {accessor} from '../../utils/propTypes'
 import DraggableEventWrapper from './DraggableEventWrapper'
-import { DayWrapper, DateCellWrapper } from './backgroundWrapper'
+import {DayWrapper, DateCellWrapper} from './backgroundWrapper'
 
 let html5Backend
 
@@ -15,15 +15,14 @@ try {
   /* optional dep missing */
 }
 
-export default function withDragAndDrop(
-  Calendar,
-  { backend = html5Backend } = {}
-) {
+export default function withDragAndDrop(Calendar,
+                                        {backend = html5Backend} = {}) {
   class DragAndDropCalendar extends React.Component {
     static propTypes = {
       selectable: PropTypes.oneOf([true, false, 'ignoreEvents']).isRequired,
       components: PropTypes.object,
     }
+
     getChildContext() {
       return {
         onEventDrop: this.props.onEventDrop,
@@ -35,7 +34,7 @@ export default function withDragAndDrop(
 
     constructor(...args) {
       super(...args)
-      this.state = { isDragging: false }
+      this.state = {isDragging: false}
     }
 
     componentWillMount() {
@@ -54,13 +53,32 @@ export default function withDragAndDrop(
     handleStateChange = () => {
       const isDragging = !!this.monitor.getItem()
 
-      if (isDragging !== this.state.isDragging) {
-        setTimeout(() => this.setState({ isDragging }))
+      if (isDragging) {
+        setTimeout(() => {
+          let container = document.getElementsByClassName('rbc-calendar rbc-addons-dnd')[0];
+          if (container.className.indexOf("rbc-addons-dnd-is-dragging") === -1){
+
+            console.log(container.className);
+            container.className += " rbc-addons-dnd-is-dragging";
+          }
+        });
+      } else {
+        setTimeout(() => {
+          let container = document.getElementsByClassName('rbc-calendar rbc-addons-dnd')[0];
+          if (container.className.indexOf("rbc-addons-dnd-is-dragging") >= 0) {
+            let a = container.className.split(' ');
+            a = a.filter(x => x.trim() !== "rbc-addons-dnd-is-dragging");
+            console.log(a);
+            container.className = a.join(' ');
+          }
+        });
+
       }
+
     }
 
     render() {
-      const { selectable, components, ...props } = this.props
+      const {selectable, components, ...props} = this.props
 
       delete props.onEventDrop;
       delete props.onEventResize;
@@ -70,7 +88,7 @@ export default function withDragAndDrop(
       props.className = cn(
         props.className,
         'rbc-addons-dnd',
-        this.state.isDragging && 'rbc-addons-dnd-is-dragging'
+        // this.state.isDragging && 'rbc-addons-dnd-is-dragging'
       )
 
       props.components = {

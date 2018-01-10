@@ -247,7 +247,10 @@ class DayColumn extends React.Component {
               'rbc-event-continues-day-prior': _continuesPrior,
               'rbc-event-continues-day-after': _continuesAfter,
             })}
+            id={event.id}
           >
+            <input type="hidden" className="step-height" value={height/dates.diff(event.start,event.end)}/>
+            <input type="hidden" className="step-top" value={top}/>
             <div className="rbc-event-content">
               {EventComponent ? (
                 <EventComponent event={event} title={title} />
