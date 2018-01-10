@@ -1,11 +1,13 @@
 import React from 'react'
 import events from '../events'
 import HTML5Backend from 'react-dnd-html5-backend'
-import { DragDropContext } from 'react-dnd'
+import {DragDropContext} from 'react-dnd'
 import BigCalendar from 'react-big-calendar'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
+import CalendarEvent from 'react-big-calendar/lib/addons/resizerDraggableBox/resizeCalendar'
 import PropTypes from 'prop-types'
 import moment from 'moment'
+import dates from '../../src/utils/dates'
 
 import 'react-big-calendar/lib/addons/dragAndDrop/styles.less'
 
@@ -64,8 +66,10 @@ class Dnd extends React.Component {
     super(props)
   }
 
-  moveEvent({ event, start, end, group }) {
-    const updatedEvent = { ...event, start, end, group }
+  moveEvent({event, start, end, group}) {
+    const updatedEvent = {...event, start, end}
+    if (group)
+      updatedEvent.group = group
     this.props.onItemChanged && this.props.onItemChanged(updatedEvent)
   }
 
@@ -79,6 +83,10 @@ class Dnd extends React.Component {
       end: slotInfo.end,
     }
     this.props.onCellClicked && this.props.onCellClicked(event)
+  }
+
+  onEventResize(itemType, {event, value, start, end}) { // called each time you move/resize an event
+    
   }
 
   render() {
@@ -100,7 +108,7 @@ class Dnd extends React.Component {
       dayFormat: (date, culture, localizer) => {
         return moment(date).format('ddd, Do MMM')
       },
-      eventTimeRangeFormat: ({ start, end }, culture, localizer) => {
+      eventTimeRangeFormat: ({start, end}, culture, localizer) => {
         return (
           start.toLocaleTimeString(localizer, {
             hour: 'numeric',
@@ -115,7 +123,7 @@ class Dnd extends React.Component {
           })
         )
       },
-      selectRangeFormat: ({ start, end }, culture, localizer) => {
+      selectRangeFormat: ({start, end}, culture, localizer) => {
         return (
           start.toLocaleTimeString(localizer, {
             hour: 'numeric',
@@ -134,17 +142,23 @@ class Dnd extends React.Component {
     return (
       <DragAndDropCalendar
         selectable
+        components={{event: CalendarEvent}}
         events={this.props.dataSet || []}
-        onEventDrop={({ event, start, end, group }) =>
-          this.moveEvent({ event, start, end, group })
+        onEventDrop={({event, start, end, group}) =>
+          this.moveEvent({event, start, end, group})
         }
+        onEventResize={(itemType, {event, value, start, end}) => this.onEventResize(itemType, {
+          event,
+          value,
+          start,
+          end
+        })}
         onSelectEvent={event => this.selectEvent(event)}
         onSelectSlot={slotInfo => this.selectCell(slotInfo)}
         step={15}
         timeslots={4}
         views={['custom']}
         defaultView="custom"
-        scrollToTime={new Date()}
         visibleDates={this.props.visibleDates}
         groups={this.props.groups}
         workingHourRange={this.props.workingHourRange}
@@ -154,7 +168,7 @@ class Dnd extends React.Component {
         min={from}
         max={to}
         formats={formats}
-        messages={{ allDay: '' }}
+        messages={{allDay: ''}}
       />
     )
   }
