@@ -7,15 +7,31 @@ Lib react-ht-calendar
 ```
 npm install https://github.com/thuanhd/react-ht-calendar.git --save
 ```
-Include các file styles
+### Include các file styles
+
+Sau khi install lib xong, vào folder `node_modules/react-ht-calendar/lib/css/` sẽ thấy file `react-big-calendar.css`, copy file này vào assets và link vào html page của mình
+
+### Include jquery
+
+Hiện lib đang require jquery, cần link jQuery vào page
+```
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+```
+### Sử dụng component
+```
+import {HTCalendar} from 'ht-calendar'
 ```
 ```
-Include jquery
+<HTCalendar
+        visibleDates={visibleDates}
+        groups={['John Cena', 'Taka']}
+        onItemChanged={event => this.handleItemChanged(event)}
+        onItemClicked={event => this.handleItemClicked(event)}
+        onCellClicked={event => this.handleCellClicked(event)}
+        dataSet={dataSet}
+      />
 ```
-```
-Sử dụng component
-```
-```
+xem ví dụ ở repo này: https://github.com/thuanhd/ht-calendar
 
 ## Chạy examples local
 
