@@ -13,6 +13,9 @@ Include các file styles
 Include jquery
 ```
 ```
+Sử dụng component
+```
+```
 
 ## Chạy examples local
 
