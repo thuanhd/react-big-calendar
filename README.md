@@ -30,7 +30,7 @@ Thêm jquery
 
 
 
-### event
+### object event
 
 Mỗi `event` gồm các field như bên dưới:
  * `id` (type: `string|number`): dùng để định danh cho 1 `event`
@@ -39,31 +39,12 @@ Mỗi `event` gồm các field như bên dưới:
  * `end` (type: `Date`): Thời điểm kết thúc của `event`
  * `group` (type: `string`): định danh nhóm của `event`
 
-### Localization and Date Formatting
+## Event Handler
 
-`react-big-calendar` includes two options for handling the date formatting and culture localization, depending
-on your preference of DateTime libraries. You can use either the [Moment.js](http://momentjs.com/) or [Globalize.js](https://github.com/jquery/globalize) localizers.
+| Event | Type | Description |
+|:---|:---|:---|
+| `onItemChanged` | `(e:event)=>void` | Sự kiện trả ra khi một `event` trên calendar được thay đổi (ví dụ khi kéo thả `event`, khi resize `event`) |
+| `onItemClicked` | `(e:event)=>void` | Sự kiện trả ra khi một `event` trên calendar được click |
+| `onCellClicked` | `(e:{start:Date,end:Date})=>void` | Sự kiện trả ra khi một `cell` trên calendar được click |
 
-Regardless of your choice, you __must__ choose a localizer to use this library:
 
-#### Moment.js
-
-```js
-import BigCalendar from 'react-big-calendar';
-import moment from 'moment';
-
-BigCalendar.setLocalizer(
-  BigCalendar.momentLocalizer(moment)
-);
-```
-
-#### Globalize.js v0.1.1
-
-```js
-import BigCalendar from 'react-big-calendar';
-import globalize from 'globalize';
-
-BigCalendar.setLocalizer(
-  BigCalendar.globalizeLocalizer(globalize)
-);
-```
