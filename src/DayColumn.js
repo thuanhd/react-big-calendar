@@ -1,16 +1,16 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { findDOMNode } from 'react-dom'
+import {findDOMNode} from 'react-dom'
 import cn from 'classnames'
 
-import Selection, { getBoundsForNode, isEvent } from './Selection'
+import Selection, {getBoundsForNode, isEvent} from './Selection'
 import dates from './utils/dates'
-import { isSelected } from './utils/selection'
+import {isSelected} from './utils/selection'
 import localizer from './localizer'
 
-import { notify } from './utils/helpers'
-import { accessor, elementType, dateFormat } from './utils/propTypes'
-import { accessor as get } from './utils/accessors'
+import {notify} from './utils/helpers'
+import {accessor, elementType, dateFormat} from './utils/propTypes'
+import {accessor as get} from './utils/accessors'
 
 import getStyledEvents, {
   positionFromDate,
@@ -82,7 +82,7 @@ class DayColumn extends React.Component {
     timeslots: 2,
   }
 
-  state = { selecting: false }
+  state = {selecting: false}
 
   componentDidMount() {
     this.props.selectable && this._selectable()
@@ -114,7 +114,7 @@ class DayColumn extends React.Component {
     } = this.props
 
     this._totalMin = dates.diff(min, max, 'minutes')
-    let { selecting, startSlot, endSlot } = this.state
+    let {selecting, startSlot, endSlot} = this.state
     let slotStyle = this._slotStyle(startSlot, endSlot)
 
     let selectDates = {
@@ -122,14 +122,14 @@ class DayColumn extends React.Component {
       end: this.state.endDate,
     }
 
-    const { className, style } = (dayPropGetter && dayPropGetter(max)) || {}
+    const {className, style} = (dayPropGetter && dayPropGetter(max)) || {}
 
     return (
       <TimeColumn
         {...props}
         group={group}
         workingHourRange={workingHourRange}
-        className={cn('rbc-day-slot', className, isOff && 'rbc-off')}
+        className={cn('rbc-day-slot', className, this.props.className, isOff && 'rbc-off')}
         style={style}
         now={now}
         min={min}
@@ -137,7 +137,6 @@ class DayColumn extends React.Component {
         step={step}
       >
         {this.renderEvents()}
-
         {selecting && (
           <div className="rbc-slot-selection" style={slotStyle}>
             <span>
@@ -185,7 +184,7 @@ class DayColumn extends React.Component {
       timeslots,
     })
 
-    return styledEvents.map(({ event, style }, idx) => {
+    return styledEvents.map(({event, style}, idx) => {
       let _eventTimeRangeFormat = eventTimeRangeFormat
       let _continuesPrior = false
       let _continuesAfter = false
@@ -212,20 +211,20 @@ class DayColumn extends React.Component {
       if (_continuesPrior && _continuesAfter) {
         label = messages.allDay
       } else {
-        label = localizer.format({ start, end }, _eventTimeRangeFormat, culture)
+        label = localizer.format({start, end}, _eventTimeRangeFormat, culture)
       }
 
       let _isSelected = isSelected(event, selected)
 
       if (eventPropGetter)
-        var { style: xStyle, className } = eventPropGetter(
+        var {style: xStyle, className} = eventPropGetter(
           event,
           start,
           end,
           _isSelected
         )
 
-      let { height, top, width, xOffset } = style
+      let {height, top, width, xOffset} = style
 
       return (
         <EventWrapper event={event} key={'evt_' + idx}>
@@ -249,11 +248,11 @@ class DayColumn extends React.Component {
             })}
             id={event.id}
           >
-            <input type="hidden" className="step-height" value={height/dates.diff(event.start,event.end)}/>
+            <input type="hidden" className="step-height" value={height / dates.diff(event.start, event.end)}/>
             <input type="hidden" className="step-top" value={top}/>
             <div className="rbc-event-content">
               {EventComponent ? (
-                <EventComponent event={event} title={title} />
+                <EventComponent event={event} title={title}/>
               ) : (
                 title
               )}
@@ -285,13 +284,13 @@ class DayColumn extends React.Component {
       let onSelecting = this.props.onSelecting
       let current = this.state || {}
       let state = selectionState(box)
-      let { startDate: start, endDate: end } = state
+      let {startDate: start, endDate: end} = state
 
       if (onSelecting) {
         if (
           (dates.eq(current.startDate, start, 'minutes') &&
             dates.eq(current.endDate, end, 'minutes')) ||
-          onSelecting({ start, end }) === false
+          onSelecting({start, end}) === false
         )
           return
       }
@@ -299,9 +298,9 @@ class DayColumn extends React.Component {
       this.setState(state)
     }
 
-    let selectionState = ({ y }) => {
-      let { step, min, max } = this.props
-      let { top, bottom } = getBoundsForNode(node)
+    let selectionState = ({y}) => {
+      let {step, min, max} = this.props
+      let {top, bottom} = getBoundsForNode(node)
 
       let mins = this._totalMin
 
@@ -332,9 +331,9 @@ class DayColumn extends React.Component {
 
     let selectorClicksHandler = (box, actionType) => {
       if (!isEvent(findDOMNode(this), box))
-        this._selectSlot({ ...selectionState(box), action: actionType })
+        this._selectSlot({...selectionState(box), action: actionType})
 
-      this.setState({ selecting: false })
+      this.setState({selecting: false})
     }
 
     selector.on('selecting', maybeSelect)
@@ -352,8 +351,8 @@ class DayColumn extends React.Component {
 
     selector.on('select', () => {
       if (this.state.selecting) {
-        this._selectSlot({ ...this.state, action: 'select' })
-        this.setState({ selecting: false })
+        this._selectSlot({...this.state, action: 'select'})
+        this.setState({selecting: false})
       }
     })
   }
@@ -364,7 +363,7 @@ class DayColumn extends React.Component {
     this._selector = null
   }
 
-  _selectSlot = ({ startDate, endDate, action }) => {
+  _selectSlot = ({startDate, endDate, action}) => {
     let current = startDate,
       slots = []
 

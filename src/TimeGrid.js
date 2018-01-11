@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 import cn from 'classnames'
-import { findDOMNode } from 'react-dom'
+import {findDOMNode} from 'react-dom'
 
 import dates from './utils/dates'
 import localizer from './localizer'
@@ -14,13 +14,13 @@ import getWidth from 'dom-helpers/query/width'
 import scrollbarSize from 'dom-helpers/util/scrollbarSize'
 import message from './utils/messages'
 
-import { accessor, dateFormat } from './utils/propTypes'
+import {accessor, dateFormat} from './utils/propTypes'
 
-import { notify } from './utils/helpers'
+import {notify} from './utils/helpers'
 
-import { accessor as get } from './utils/accessors'
+import {accessor as get} from './utils/accessors'
 
-import { inRange, sortEvents, segStyle } from './utils/eventLevels'
+import {inRange, sortEvents, segStyle} from './utils/eventLevels'
 
 export default class TimeGrid extends Component {
   static propTypes = {
@@ -90,7 +90,7 @@ export default class TimeGrid extends Component {
 
   constructor(props) {
     super(props)
-    this.state = { gutterWidth: undefined, isOverflowing: null }
+    this.state = {gutterWidth: undefined, isOverflowing: null}
     this.handleSelectEvent = this.handleSelectEvent.bind(this)
     this.handleDoubleClickEvent = this.handleDoubleClickEvent.bind(this)
     this.handleHeaderClick = this.handleHeaderClick.bind(this)
@@ -128,7 +128,7 @@ export default class TimeGrid extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { range, scrollToTime } = this.props
+    const {range, scrollToTime} = this.props
     // When paginating, reset scroll
     if (
       !dates.eq(nextProps.range[0], range[0], 'minute') ||
@@ -139,7 +139,7 @@ export default class TimeGrid extends Component {
   }
 
   handleSelectAllDaySlot = (slots, slotInfo) => {
-    const { onSelectSlot } = this.props
+    const {onSelectSlot} = this.props
     notify(onSelectSlot, {
       slots,
       start: slots[0],
@@ -212,11 +212,11 @@ export default class TimeGrid extends Component {
           groups
         )}
         <div ref="content" className="rbc-time-content">
-          <div ref="timeIndicator" className="rbc-current-time-indicator" />
+          <div ref="timeIndicator" className="rbc-current-time-indicator"/>
           <TimeColumn
             {...this.props}
             showLabels
-            style={{ width }}
+            style={{width}}
             ref={gutterRef}
             className="rbc-time-gutter"
           />
@@ -241,10 +241,13 @@ export default class TimeGrid extends Component {
     let rangeGroups = []
     for (let i = 0; i < range.length; i++) {
       for (let j = 0; j < groups.length; j++) {
-        rangeGroups.push({ date: range[i], group: groups[j] })
+        rangeGroups.push({date: range[i], group: groups[j]})
       }
     }
-    return rangeGroups.map(({ date, group }, idx) => {
+    let currentDate;
+    return rangeGroups.map(({date, group}, idx) => {
+      let split = idx > 0 && currentDate === date;
+      currentDate = date;
       let daysEvents = events.filter(
         event =>
           dates.inRange(
@@ -258,10 +261,10 @@ export default class TimeGrid extends Component {
         let eventsToDisplay = !resource
           ? daysEvents
           : daysEvents.filter(
-              event =>
-                get(event, resourceAccessor) ===
-                get(resource, resourceIdAccessor)
-            )
+            event =>
+              get(event, resourceAccessor) ===
+              get(resource, resourceIdAccessor)
+          )
         let weekDay = dates.getDateWeek(date)
         return (
           <DayColumn
@@ -273,7 +276,7 @@ export default class TimeGrid extends Component {
             eventComponent={components.event}
             eventWrapperComponent={components.eventWrapper}
             dayWrapperComponent={components.dayWrapper}
-            className={cn({ 'rbc-now': dates.eq(date, today, 'day') })}
+            className={cn({'split': split})}
             style={segStyle(1, this.slots)}
             key={idx + '-' + id}
             isOff={dayOffs.includes(weekDay)}
@@ -287,8 +290,8 @@ export default class TimeGrid extends Component {
   }
 
   renderHeader(range, events, width, resources, dayOffs, groups) {
-    let { messages, rtl, selectable, components, now } = this.props
-    let { isOverflowing } = this.state || {}
+    let {messages, rtl, selectable, components, now} = this.props
+    let {isOverflowing} = this.state || {}
 
     let style = {}
     if (isOverflowing)
@@ -305,12 +308,12 @@ export default class TimeGrid extends Component {
         style={style}
       >
         <div className="rbc-row">
-          <div className="rbc-label rbc-header-gutter" style={{ width }} />
+          <div className="rbc-label rbc-header-gutter" style={{width}}/>
           {this.renderHeaderCells(range)}
         </div>
         {resources && (
           <div className="rbc-row rbc-row-resource">
-            <div className="rbc-label rbc-header-gutter" style={{ width }} />
+            <div className="rbc-label rbc-header-gutter" style={{width}}/>
             {headerRendered}
           </div>
         )}
@@ -318,7 +321,7 @@ export default class TimeGrid extends Component {
           <div
             ref={ref => (this._gutters[0] = ref)}
             className="rbc-label rbc-header-gutter"
-            style={{ width }}
+            style={{width}}
           >
             {''}
           </div>
@@ -329,17 +332,21 @@ export default class TimeGrid extends Component {
   }
 
   renderHeaderGroups(range, groups) {
-    let { dayPropGetter } = this.props
+    let {dayPropGetter} = this.props
 
     let newRange = []
     for (let i = 0; i < range.length; i++) {
       for (let j = 0; j < groups.length; j++) {
-        newRange.push({ date: range[i], groupName: groups[j] })
+        newRange.push({date: range[i], groupName: groups[j]})
       }
     }
-    return newRange.map(({ date, groupName }, index) => {
-      const { className, style: dayStyles } =
-        (dayPropGetter && dayPropGetter(date)) || {}
+    let currentDate;
+    return newRange.map(({date, groupName}, index) => {
+      let split = index > 0 && currentDate === date;
+      currentDate = date;
+
+      const {className, style: dayStyles} =
+      (dayPropGetter && dayPropGetter(date)) || {}
 
       let dateWeek = dates.getDateWeek(date)
       return (
@@ -348,6 +355,7 @@ export default class TimeGrid extends Component {
           className={cn(
             'rbc-header',
             'rbc-groupName',
+            split && 'split',
             className,
             dates.isToday(date) && 'rbc-today',
             this.props.dayOffs.includes(dateWeek) && 'rbc-off'
@@ -361,7 +369,7 @@ export default class TimeGrid extends Component {
   }
 
   renderHeaderResources(range, resources) {
-    const { resourceTitleAccessor } = this.props
+    const {resourceTitleAccessor} = this.props
     return range.map((date, i) => {
       return resources.map((resource, j) => {
         return (
@@ -395,8 +403,8 @@ export default class TimeGrid extends Component {
       let drilldownView = getDrilldownView(date)
       let label = localizer.format(date, dayFormat, culture)
 
-      const { className, style: dayStyles } =
-        (dayPropGetter && dayPropGetter(date)) || {}
+      const {className, style: dayStyles} =
+      (dayPropGetter && dayPropGetter(date)) || {}
 
       let header = (
         <HeaderComponent
@@ -467,14 +475,14 @@ export default class TimeGrid extends Component {
 
       if (width) {
         width += 10
-        this.setState({ gutterWidth: width })
+        this.setState({gutterWidth: width})
       }
     }
   }
 
   applyScroll() {
     if (this._scrollRatio) {
-      const { content } = this.refs
+      const {content} = this.refs
       content.scrollTop = content.scrollHeight * this._scrollRatio
       // Only do this once
       this._scrollRatio = null
@@ -482,7 +490,7 @@ export default class TimeGrid extends Component {
   }
 
   calculateScroll() {
-    const { min, max, scrollToTime } = this.props
+    const {min, max, scrollToTime} = this.props
 
     const diffMillis = scrollToTime - dates.startOf(scrollToTime, 'day')
     const totalMillis = dates.diff(max, min)
@@ -498,14 +506,14 @@ export default class TimeGrid extends Component {
 
     if (this.state.isOverflowing !== isOverflowing) {
       this._updatingOverflow = true
-      this.setState({ isOverflowing }, () => {
+      this.setState({isOverflowing}, () => {
         this._updatingOverflow = false
       })
     }
   }
 
   positionTimeIndicator() {
-    const { rtl, min, max } = this.props
+    const {rtl, min, max} = this.props
     const now = new Date()
 
     const secondsGrid = dates.diff(max, min, 'seconds')

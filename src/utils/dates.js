@@ -1,6 +1,7 @@
 /* eslint no-fallthrough: off */
 import dateMath from 'date-arithmetic'
 import localizer from '../localizer'
+import moment from 'moment'
 
 const MILLI = {
   seconds: 1000,
@@ -165,6 +166,16 @@ let dates = {
   getDateWeek(date) {
     return date.getDay() === 0 ? 7 : date.getDay()
   },
+
+  getDatesWeek() {
+    let monday = moment().isoWeekday(1)
+    let visibleDates = [monday.toDate()]
+    for (let i = 1; i < 7; i++) {
+      visibleDates.push(monday.add(1, 'days').toDate())
+    }
+    return visibleDates;
+  }
+
 }
 
 export default dates

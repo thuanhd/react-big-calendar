@@ -107,13 +107,6 @@ function getEventResizeTimes(event, value, startAccessor) { // calculate new sta
   var start = get(event, startAccessor);
   var end = value;
 
-  // resizing up, when resizer pass above event start
-  var isPassAbove = (start >= end);
-  if (isPassAbove) {
-    var temp = start;
-    start = end;
-    end = temp;
-  }
 
   end = moment(start).set({
     hour: end.getHours(),
@@ -121,6 +114,14 @@ function getEventResizeTimes(event, value, startAccessor) { // calculate new sta
     second: 0,
     millisecond: 0
   }).toDate();
+
+  // resizing up, when resizer pass above event start
+  var isPassAbove = (start >= end);
+  if (isPassAbove) {
+    var temp = start;
+    start = end;
+    end = temp;
+  }
 
   return {
     event: event,

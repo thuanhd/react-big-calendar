@@ -57,8 +57,6 @@ export default function withDragAndDrop(Calendar,
         setTimeout(() => {
           let container = document.getElementsByClassName('rbc-calendar rbc-addons-dnd')[0];
           if (container.className.indexOf("rbc-addons-dnd-is-dragging") === -1){
-
-            console.log(container.className);
             container.className += " rbc-addons-dnd-is-dragging";
           }
         });
@@ -68,7 +66,6 @@ export default function withDragAndDrop(Calendar,
           if (container.className.indexOf("rbc-addons-dnd-is-dragging") >= 0) {
             let a = container.className.split(' ');
             a = a.filter(x => x.trim() !== "rbc-addons-dnd-is-dragging");
-            console.log(a);
             container.className = a.join(' ');
           }
         });
