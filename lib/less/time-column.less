@@ -1,0 +1,94 @@
+@import './variables.less';
+
+
+.rbc-time-column {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+
+  .rbc-timeslot-group {
+    flex: 1;
+  }
+}
+
+
+.rbc-timeslot-group {
+  border-bottom: 1px solid @cell-border;
+  min-height: 72px;
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.rbc-time-gutter,
+.rbc-header-gutter {
+  flex: none;
+}
+
+.rbc-label {
+  padding: 0 5px;
+  font-weight: 400;
+  text-align: right;
+}
+
+.rbc-day-slot {
+  position: relative;
+
+  .rbc-event {
+    border: 1px solid @event-border;
+    display: flex;
+    max-height: 100%;
+    flex-flow: column wrap;
+    align-items: flex-start;
+    overflow: hidden;
+  }
+
+  .rbc-event-label {
+    flex: 1;
+    padding-right: 5px;
+    width: 100%;
+    text-overflow: clip;
+  }
+
+  .rbc-event-content {
+    width: 100%;
+    line-height: 15px;
+    min-height: 1em;
+    font-size: 85%;
+    font-weight:bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+  }
+
+  .rbc-time-slot {
+    border-top: 1px solid @cell-time-border;
+  }
+  .rbc-time-slot:first-child {
+    border-top: none;
+  }
+}
+
+.split .rbc-timeslot-group {
+  border-left-style: dashed !important;
+}
+
+.rbc-off .rbc-time-slot {
+  border-color: @off-bg
+  }
+
+.rbc-time-slot {
+  flex: 1 0 0;
+
+  &.rbc-now {
+    font-weight: bold;
+  }
+}
+
+.rbc-day-header {
+  text-align: center;
+}
+
+.rbc-day-slot .rbc-event {
+  position: absolute;
+  z-index: 2;
+}
