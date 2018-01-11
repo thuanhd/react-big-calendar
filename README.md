@@ -1,22 +1,31 @@
 react-big-calendar
 ========================
 
-An events calendar component built for React and made for modern browsers (read: IE10+) and uses flexbox over the classic tables-ception approach.
+Lib react-ht-calendar
 
-Inspired by [Full Calendar](http://fullcalendar.io/).
+## Sử dụng
 
-## Use and Setup
+`npm install http://github.com/thuanhd/react-ht-calendar --save`
+Thêm các file style
+Thêm jquery
 
-`npm install react-big-calendar --save`
+## Chạy examples local
 
-Include `react-big-calendar/lib/css/react-big-calendar.css` for styles.
-
-## Run examples locally
-
-* Clone this repository
-* Retrieve dependencies: `npm install`
+* Clone repository
+* Install: `npm install`
 * Start: `npm run examples`
 * Open [localhost:3000/examples/index.html](http://localhost:3000/examples/index.html).
+
+## Input
+
+### dataSet
+
+Nhận vào các `events` được hiển thị trên calendar. Mỗi `event` gồm các field như bên dưới:
+ * `id` (type: `string|number`): dùng để định danh cho 1 `event`
+ * `title` (type: `string`): Tiêu đề của `event`
+ * `start` (type: `Date`): Thời điểm bắt đầu của `event`
+ * `end` (type: `Date`): Thời điểm kết thúc của `event`
+ * `group` (type: `string`): định danh nhóm của `event`
 
 ### Localization and Date Formatting
 
