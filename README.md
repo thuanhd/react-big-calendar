@@ -4,10 +4,15 @@ react-big-calendar
 Lib react-ht-calendar
 
 ## Sử dụng
-
-`npm install http://github.com/thuanhd/react-ht-calendar --save`
-Thêm các file style
-Thêm jquery
+```
+npm install http://github.com/thuanhd/react-ht-calendar --save
+```
+Include các file styles
+```
+```
+Include jquery
+```
+```
 
 ## Chạy examples local
 
