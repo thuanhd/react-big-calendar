@@ -13,8 +13,8 @@ import BackgroundWrapper from './BackgroundWrapper'
 import { set as setLocalizer } from './localizer'
 import momentLocalizer from './localizers/moment'
 import globalizeLocalizer from './localizers/globalize'
-import 'react-big-calendar/lib/less/styles.less'
-import 'react-big-calendar/lib/addons/dragAndDrop/styles.less'
+import './less/styles.less'
+import './addons/dragAndDrop/styles.less'
 
 import { views, navigate } from './utils/constants'
 
