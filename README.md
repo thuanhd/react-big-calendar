@@ -5,7 +5,7 @@ Lib react-ht-calendar
 
 ## Sử dụng
 ```
-npm install http://github.com/thuanhd/react-ht-calendar --save
+npm install https://github.com/thuanhd/react-ht-calendar.git --save
 ```
 Include các file styles
 ```
