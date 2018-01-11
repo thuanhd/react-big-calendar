@@ -1,6 +1,5 @@
 import React from 'react'
 import CalendarResizerDraggableBox from './CalendarResizerDraggableBox';
-import './CalendarResizerDraggableBox.less'
 
 class CalendarEvent extends React.Component {
   render() {
