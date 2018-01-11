@@ -18,6 +18,7 @@ Thêm jquery
 
 ## Input
 
+
 | Parameter | Type | Description | Ví dụ |
 |:---|:---|:---|
 | dataSet | event[] | Các events được hiển thị trên Calendar | `[{id:1,title:'Khám sức khỏe',start: new Date(2018,0,1,10,30,0),end: new Date(2018,0,1,12,45,0),group:'Mr An'}]` |
