@@ -5,21 +5,28 @@ import date from './utils/dates.js'
 import localizer from './localizer'
 import { elementType, dateFormat } from './utils/propTypes'
 import cn from 'classnames'
+import {notify} from './utils/helpers'
 
 export default class TimeSlotGroup extends Component {
   static propTypes = {
     dayWrapperComponent: elementType,
     timeslots: PropTypes.number.isRequired,
     isWorkingHour: PropTypes.bool,
+    practitionerAvaiable: PropTypes.bool,
     step: PropTypes.number.isRequired,
     value: PropTypes.instanceOf(Date).isRequired,
-    group: PropTypes.string,
+    practitioner: PropTypes.shape({
+      key: PropTypes.string,
+      value: PropTypes.string,
+      workingHours: PropTypes.shape({from: PropTypes.number, to: PropTypes.number})
+    }),
     showLabels: PropTypes.bool,
     isNow: PropTypes.bool,
     slotPropGetter: PropTypes.func,
     timeGutterFormat: dateFormat,
     culture: PropTypes.string,
     resource: PropTypes.string,
+    onSelectSlot: PropTypes.func,
   }
   static defaultProps = {
     timeslots: 2,
@@ -36,7 +43,7 @@ export default class TimeSlotGroup extends Component {
       culture,
       resource,
       slotPropGetter,
-      group,
+      practitioner,
     } = this.props
     return (
       <TimeSlot
@@ -49,7 +56,9 @@ export default class TimeSlotGroup extends Component {
         isNow={isNow}
         resource={resource}
         value={value}
-        group={group}
+        practitioner={practitioner}
+        step={this.props.step}
+        onSelectSlot={(slotInfo) => this.handleSelect(slotInfo)}
       />
     )
   }
@@ -70,11 +79,15 @@ export default class TimeSlotGroup extends Component {
     return ret
   }
   render() {
-    const { isWorkingHour } = this.props
+    const { isWorkingHour, practitionerAvaiable } = this.props
     return (
-      <div className={cn('rbc-timeslot-group', isWorkingHour || 'rbc-off')}>
+      <div className={cn('rbc-timeslot-group', (isWorkingHour && practitionerAvaiable) || 'rbc-off')}>
         {this.renderSlices()}
       </div>
     )
+  }
+
+  handleSelect(slotInfo) {
+    notify(this.props.onSelectSlot, slotInfo);
   }
 }

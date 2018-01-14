@@ -82,7 +82,7 @@ class Dnd extends React.Component {
       start: slotInfo.start,
       end: slotInfo.end,
     }
-    this.props.onCellClicked && this.props.onCellClicked(event)
+    this.props.onNewItemClicked && this.props.onNewItemClicked(event)
   }
 
   onEventResize(itemType, {event, value, start, end, isPassAbove}) { // called each time you move/resize an event

@@ -18,7 +18,7 @@ button.rbc-input::-moz-focus-inner {
 }
 .rbc-calendar {
   box-sizing: border-box;
-  height: 100vh;
+  height: 100%;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -108,6 +108,47 @@ button.rbc-input::-moz-focus-inner {
 .rbc-groupName > span {
   word-wrap: break-word;
   display: block;
+  white-space: normal;
+}
+.rbc-groupName.split {
+  border-left-style: dashed !important;
+}
+.rbc-addons-dnd .rbc-row-content {
+  pointer-events: none;
+}
+.rbc-addons-dnd .rbc-row-content .rbc-show-more,
+.rbc-addons-dnd .rbc-row-content .rbc-event:not(.rbc-addons-dnd-dragging) {
+  pointer-events: all;
+}
+.rbc-addons-dnd .rbc-addons-dnd-over {
+  background-color: #bfddff;
+}
+.rbc-addons-dnd .rbc-event {
+  transition: opacity 150ms;
+  pointer-events: all;
+}
+.rbc-addons-dnd.rbc-addons-dnd-is-dragging .rbc-event {
+  pointer-events: none;
+  opacity: .50;
+}
+.rbc-resizer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 8px;
+  overflow: hidden;
+  line-height: 8px;
+  font-size: 11px;
+  font-family: monospace;
+  text-align: center;
+  cursor: s-resize;
+  /*user-drag: none;*/
+}
+.rbc-resizer::after {
+  content: '=';
+}
+.rbc-event-contentsub.wrap-text {
   white-space: normal;
 }
 .rbc-toolbar {
@@ -501,6 +542,9 @@ button.rbc-input::-moz-focus-inner {
 }
 .rbc-day-slot .rbc-time-slot:first-child {
   border-top: none;
+}
+.split .rbc-timeslot-group {
+  border-left-style: dashed !important;
 }
 .rbc-off .rbc-time-slot {
   border-color: rgba(204, 204, 204, 0.7);

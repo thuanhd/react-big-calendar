@@ -6,6 +6,7 @@ import dates from './utils/dates'
 import { elementType, dateFormat } from './utils/propTypes'
 import BackgroundWrapper from './BackgroundWrapper'
 import TimeSlotGroup from './TimeSlotGroup'
+import {notify} from './utils/helpers'
 
 export default class TimeColumn extends Component {
   static propTypes = {
@@ -19,7 +20,11 @@ export default class TimeColumn extends Component {
       from: PropTypes.number,
       to: PropTypes.number,
     }),
-    group: PropTypes.string,
+    practitioner: PropTypes.shape({
+      key: PropTypes.string,
+      value: PropTypes.string,
+      workingHours: PropTypes.shape({from: PropTypes.number, to: PropTypes.number})
+    }),
 
     showLabels: PropTypes.bool,
     timeGutterFormat: dateFormat,
@@ -30,6 +35,7 @@ export default class TimeColumn extends Component {
     slotPropGetter: PropTypes.func,
     dayPropGetter: PropTypes.func,
     dayWrapperComponent: elementType,
+    onSelectSlot: PropTypes.func,
   }
   static defaultProps = {
     step: 30,
@@ -51,7 +57,7 @@ export default class TimeColumn extends Component {
       timeGutterFormat,
       workingHourRange,
       culture,
-      group,
+      practitioner,
     } = this.props
     let hour = date.getHours()
     let isWorkingHour =
@@ -59,13 +65,26 @@ export default class TimeColumn extends Component {
       (workingHourRange &&
         hour >= workingHourRange.from &&
         hour <= workingHourRange.to)
+
+    let practitionerAvaiable = true;
+    let from =  practitioner && practitioner.workingHours && practitioner.workingHours.from;
+    let to =  practitioner && practitioner.workingHours && practitioner.workingHours.to;
+
+    if(from && from >=0 && from <=24) {
+      practitionerAvaiable = from <= hour;
+    }
+    if(practitionerAvaiable && to && to >=0 && to <=24) {
+      practitionerAvaiable = to >= hour
+    }
+
     return (
       <TimeSlotGroup
         key={key}
         isWorkingHour={isWorkingHour}
+        practitionerAvaiable={practitionerAvaiable}
         isNow={isNow}
         value={date}
-        group={group}
+        practitioner={practitioner}
         step={step}
         slotPropGetter={slotPropGetter}
         dayPropGetter={dayPropGetter}
@@ -75,6 +94,7 @@ export default class TimeColumn extends Component {
         showLabels={showLabels}
         timeGutterFormat={timeGutterFormat}
         dayWrapperComponent={dayWrapperComponent}
+        onSelectSlot={(slotInfo) => this.handleSelect(slotInfo)}
       />
     )
   }
@@ -119,5 +139,9 @@ export default class TimeColumn extends Component {
         {children}
       </div>
     )
+  }
+
+  handleSelect(slotInfo) {
+    notify(this.props.onSelectSlot, slotInfo)
   }
 }

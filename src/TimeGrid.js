@@ -34,7 +34,11 @@ export default class TimeGrid extends Component {
       from: PropTypes.number,
       to: PropTypes.number,
     }),
-    groups: PropTypes.arrayOf(PropTypes.string),
+    practitioners: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string,
+      value: PropTypes.string,
+      workingHours: PropTypes.shape({from: PropTypes.number, to: PropTypes.number})
+    })),
     min: PropTypes.instanceOf(Date),
     max: PropTypes.instanceOf(Date),
     now: PropTypes.instanceOf(Date),
@@ -73,6 +77,7 @@ export default class TimeGrid extends Component {
 
     messages: PropTypes.object,
     components: PropTypes.object.isRequired,
+    showFormatter: PropTypes.func
   }
 
   static defaultProps = {
@@ -85,7 +90,7 @@ export default class TimeGrid extends Component {
      */
     type: 'gutter',
     now: new Date(),
-    groups: [null],
+    practitioners: [null],
   }
 
   constructor(props) {
@@ -158,7 +163,6 @@ export default class TimeGrid extends Component {
       endAccessor,
       resources,
       allDayAccessor,
-      groups,
       showMultiDayTimes,
     } = this.props
 
@@ -208,8 +212,7 @@ export default class TimeGrid extends Component {
           allDayEvents,
           width,
           resources,
-          dayOffs,
-          groups
+          dayOffs
         )}
         <div ref="content" className="rbc-time-content">
           <div ref="timeIndicator" className="rbc-current-time-indicator"/>
@@ -235,17 +238,17 @@ export default class TimeGrid extends Component {
       resourceAccessor,
       resourceIdAccessor,
       components,
-      groups,
+      practitioners,
       workingHourRange,
     } = this.props
     let rangeGroups = []
     for (let i = 0; i < range.length; i++) {
-      for (let j = 0; j < groups.length; j++) {
-        rangeGroups.push({date: range[i], group: groups[j]})
+      for (let j = 0; j < practitioners.length; j++) {
+        rangeGroups.push({date: range[i], practitioner: practitioners[j]})
       }
     }
     let currentDate;
-    return rangeGroups.map(({date, group}, idx) => {
+    return rangeGroups.map(({date, practitioner}, idx) => {
       let split = idx > 0 && currentDate === date;
       currentDate = date;
       let daysEvents = events.filter(
@@ -255,7 +258,7 @@ export default class TimeGrid extends Component {
             get(event, startAccessor),
             get(event, endAccessor),
             'day'
-          ) && group === event.group
+          ) && practitioner && practitioner.key === event.practitionerKey
       )
       return resources.map((resource, id) => {
         let eventsToDisplay = !resource
@@ -281,15 +284,17 @@ export default class TimeGrid extends Component {
             key={idx + '-' + id}
             isOff={dayOffs.includes(weekDay)}
             date={date}
-            group={group}
+            practitioner={practitioner}
             events={eventsToDisplay}
+            onSelectSlot={(slotInfo) => this.handleSelect(slotInfo)}
+            showFormatter={this.props.showFormatter}
           />
         )
       })
     })
   }
 
-  renderHeader(range, events, width, resources, dayOffs, groups) {
+  renderHeader(range, events, width, resources, dayOffs) {
     let {messages, rtl, selectable, components, now} = this.props
     let {isOverflowing} = this.state || {}
 
@@ -325,23 +330,23 @@ export default class TimeGrid extends Component {
           >
             {''}
           </div>
-          {this.renderHeaderGroups(range, groups)}
+          {this.renderHeaderGroups(range)}
         </div>
       </div>
     )
   }
 
-  renderHeaderGroups(range, groups) {
-    let {dayPropGetter} = this.props
+  renderHeaderGroups(range) {
+    let {dayPropGetter, practitioners} = this.props
 
     let newRange = []
     for (let i = 0; i < range.length; i++) {
-      for (let j = 0; j < groups.length; j++) {
-        newRange.push({date: range[i], groupName: groups[j]})
+      for (let j = 0; j < practitioners.length; j++) {
+        newRange.push({date: range[i], practitioner: practitioners[j]})
       }
     }
     let currentDate;
-    return newRange.map(({date, groupName}, index) => {
+    return newRange.map(({date, practitioner}, index) => {
       let split = index > 0 && currentDate === date;
       currentDate = date;
 
@@ -362,7 +367,7 @@ export default class TimeGrid extends Component {
           )}
           style={Object.assign({}, dayStyles, segStyle(1, this.slots))}
         >
-          <span>{groupName}</span>
+          <span>{practitioner ? practitioner.value : ''}</span>
         </div>
       )
     })
@@ -440,6 +445,10 @@ export default class TimeGrid extends Component {
         </div>
       )
     })
+  }
+
+  handleSelect(slotInfo) {
+    notify(this.props.onSelectSlot, slotInfo);
   }
 
   handleHeaderClick(date, view, e) {

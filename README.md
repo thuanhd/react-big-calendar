@@ -23,13 +23,30 @@ import {HTCalendar} from 'ht-calendar'
 ```
 ```
 <HTCalendar
-        visibleDates={visibleDates}
-        groups={['John Cena', 'Taka']}
-        onItemChanged={event => this.handleItemChanged(event)}
-        onItemClicked={event => this.handleItemClicked(event)}
-        onCellClicked={event => this.handleCellClicked(event)}
-        dataSet={dataSet}
-      />
+    timeSlot={4}
+    scale={7}
+    dayOffs={[2,4]}
+    practitioners={[{
+      key: 'p1',
+      value: 'John Cena',
+      workingHours: {
+        from: 9,
+        to: 12,
+      }
+    },{
+      key: 'p2',
+      value: 'Taka',
+      workingHours: {
+        from: 14,
+        to: 17,
+      }
+    }]}
+    onItemChanged={event => this.handleItemChanged(event)}
+    onItemClicked={event => this.handleItemClicked(event)}
+    onNewItemClicked={event => this.onNewItemClicked(event)}
+    data={data}
+    showFormatter={(event) => this.formater(event)}
+  />
 ```
 xem ví dụ ở repo này: https://github.com/thuanhd/ht-calendar
 

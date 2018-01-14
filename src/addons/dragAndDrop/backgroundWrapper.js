@@ -143,7 +143,7 @@ function createWrapper(type) {
     drop(_, monitor, { props, context }) {
       const event = monitor.getItem()
       const itemType = monitor.getItemType();
-      const { value, group } = props
+      const { value, practitioner } = props
       const { onEventDrop, startAccessor, endAccessor } = context
 
       var propsCallback;
@@ -157,7 +157,7 @@ function createWrapper(type) {
         propsCallback = {
           event: event,
           ...getEventTimes(start, end, value, type),
-          group
+          practitioner
         };
 
       }

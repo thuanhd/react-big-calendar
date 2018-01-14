@@ -10,11 +10,11 @@ import move from './utils/move'
 import Calendar from './Calendar'
 import EventWrapper from './EventWrapper'
 import BackgroundWrapper from './BackgroundWrapper'
-import { set as setLocalizer } from './localizer'
+import {set as setLocalizer} from './localizer'
 import momentLocalizer from './localizers/moment'
 import globalizeLocalizer from './localizers/globalize'
 
-import { views, navigate } from './utils/constants'
+import {views, navigate} from './utils/constants'
 
 Object.assign(Calendar, {
   setLocalizer,
@@ -40,53 +40,53 @@ const DragAndDropCalendar = withDragAndDrop(Calendar)
 
 class DndCalendar extends React.Component {
   static propsTypes = {
-    dataSet: PropTypes.arrayOf(
+    timeSlot: PropTypes.number,
+    practitioners: PropTypes.arrayOf(PropTypes.shape({
+      key: PropTypes.string,
+      value: PropTypes.string,
+      workingHours: PropTypes.shape({from: PropTypes.number, to: PropTypes.number})
+    })),
+    data: PropTypes.arrayOf(
       PropTypes.shape({
-        id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-        title: PropTypes.string,
+        key: PropTypes.string,
+        practitionerKey: PropTypes.string,
+        data: PropTypes.any,
         start: PropTypes.instanceOf(Date),
         end: PropTypes.instanceOf(Date),
-        group: PropTypes.string,
+        unavailable: PropTypes.bool,
       })
     ),
     date: PropTypes.instanceOf(Date),
-    visibleDates: PropTypes.arrayOf(PropTypes.instanceOf(Date)),
-    workingHourRange: PropTypes.shape({
-      from: PropTypes.number,
-      to: PropTypes.number,
-    }),
+    scale: PropTypes.number,
     dayHourRange: PropTypes.shape({
       from: PropTypes.number,
       to: PropTypes.number,
     }),
     dayOffs: PropTypes.arrayOf(PropTypes.number),
-    groups: PropTypes.arrayOf(PropTypes.string),
     onItemChanged: PropTypes.func,
     onItemClicked: PropTypes.func,
-    onCellClicked: PropTypes.func,
+    onNewItemClicked: PropTypes.func,
+    showFormatter: PropTypes.func
   }
 
   static defaultProps = {
-    dataSet: [],
+    timeSlot: 4,
+    practitioners: [null],
+    data: [],
     date: new Date(),
+    scale: 7,
     visibleDates: dates.getDatesWeek(),
-    workingHourRange: {
-      from: 9,
-      to: 17,
-    },
     dayHourRange: {
       from: 7,
       to: 22,
     },
-    dayOffs: [6, 7],
-    groups: [null],
+    dayOffs: [5, 6],
   }
 
-  moveEvent({event, start, end, group}) {
+  moveEvent({event, start, end, practitioner}) {
     const updatedEvent = {...event, start, end}
-    if (group)
-      updatedEvent.group = group;
-
+    if (practitioner)
+      updatedEvent.practitionerKey = practitioner && practitioner.key;
     this.props.onItemChanged && this.props.onItemChanged(updatedEvent)
   }
 
@@ -98,13 +98,14 @@ class DndCalendar extends React.Component {
     let event = {
       start: slotInfo.start,
       end: slotInfo.end,
+      practitioner: slotInfo.practitioner,
     }
-    this.props.onCellClicked && this.props.onCellClicked(event)
+    this.props.onNewItemClicked && this.props.onNewItemClicked(event)
   }
 
   onEventResize(itemType, {event, value, start, end, isPassAbove}) {
     if (itemType === 'event-resize') {
-      let ele = $('#' + event.id);
+      let ele = $('#' + event.key);
       let hid = ele.find('.step-height').val();
       const duration2 = dates.diff(start, end);
       let newHeight = duration2 * hid;
@@ -118,6 +119,10 @@ class DndCalendar extends React.Component {
   }
 
   render() {
+
+    let {timeSlot} = this.props;
+    timeSlot = timeSlot <= 60 ? (timeSlot < 1 ? 1 : timeSlot) : 1;
+    let step = 60 / timeSlot;
     let from, to;
     let d = new Date();
     d.setHours(this.props.dayHourRange.from, 0, 0);
@@ -166,14 +171,22 @@ class DndCalendar extends React.Component {
         )
       },
     }
+    let visibleDates = this.calculateVisibleDate();
+
+    let workingHourRange = Object.assign({}, this.props.dayHourRange);
+
+    let dayOffs = this.props.dayOffs;
+    dayOffs = dayOffs && dayOffs.map(d => {
+      if(d + 1 === 7) return 0;
+      return d + 1;
+    });
 
     return (
       <DragAndDropCalendar
-        selectable
         components={{event: CalendarEvent}}
-        events={this.props.dataSet || []}
-        onEventDrop={({event, start, end, group}) =>
-          this.moveEvent({event, start, end, group})
+        events={this.props.data || []}
+        onEventDrop={({event, start, end, practitioner}) =>
+          this.moveEvent({event, start, end, practitioner})
         }
         onEventResize={(itemType, {event, value, start, end, isPassAbove}) => this.onEventResize(itemType, {
           event,
@@ -184,22 +197,53 @@ class DndCalendar extends React.Component {
         })}
         onSelectEvent={event => this.selectEvent(event)}
         onSelectSlot={slotInfo => this.selectCell(slotInfo)}
-        step={15}
-        timeslots={4}
+        step={step}
+        timeslots={timeSlot}
         views={['custom']}
         defaultView={'custom'}
-        visibleDates={this.props.visibleDates}
-        groups={this.props.groups}
-        workingHourRange={this.props.workingHourRange}
-        // culture={'vi-VN'}
+        visibleDates={visibleDates}
+        practitioners={this.props.practitioners}
+        workingHourRange={workingHourRange}
+        dayOffs={dayOffs}
         defaultDate={this.props.date}
         toolbar={false}
         min={from}
         max={to}
         formats={formats}
         messages={{allDay: ''}}
+        showFormatter={this.props.showFormatter}
+        titleAccessor={(event) => this.handleEventTitle(event)}
       />
     )
+  }
+
+  calculateVisibleDate() {
+    let visibleDates = [];
+    let {date, scale} = this.props;
+
+    scale = scale < 1 ? 1 : (scale > 31 ? 31 : scale);
+
+    switch (scale) {
+      case 7:
+        let monday = moment(date).isoWeekday(1);
+        visibleDates = [monday.toDate()];
+        for (let i = 1; i < 7; i++) {
+          visibleDates.push(monday.add(1, 'days').toDate());
+        }
+        break;
+      default:
+        let start = (Math.floor(scale / 2) - (scale % 2 === 0 ? 1 : 0)) * -1;
+        let end = Math.floor(scale / 2) ;
+        for (let i = start; i <= end; i++) {
+          visibleDates.push(moment(date).add(i, 'days').toDate());
+        }
+
+    }
+    return visibleDates;
+  }
+
+  handleEventTitle(event) {
+    return event.data;
   }
 }
 

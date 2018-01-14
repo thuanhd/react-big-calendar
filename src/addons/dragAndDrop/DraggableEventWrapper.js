@@ -28,7 +28,7 @@ const propTypes = {
 
 class DraggableEventWrapper extends React.Component {
   render() {
-    let { connectDragSource, isDragging, children, event } = this.props
+    let { connectDragSource, isDragging, children, event, showFormatter } = this.props
     let EventWrapper = BigCalendar.components.eventWrapper
 
     children = React.cloneElement(children, {
@@ -39,7 +39,7 @@ class DraggableEventWrapper extends React.Component {
     })
 
     return (
-      <EventWrapper event={event}>{connectDragSource(children)}</EventWrapper>
+      <EventWrapper event={event} showFormatter={showFormatter}>{connectDragSource(children)}</EventWrapper>
     )
   }
 }

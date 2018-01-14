@@ -75,6 +75,7 @@ class DayColumn extends React.Component {
     eventComponent: elementType,
     eventWrapperComponent: elementType.isRequired,
     resource: PropTypes.string,
+    showFormatter: PropTypes.func
   }
 
   static defaultProps = {
@@ -206,7 +207,13 @@ class DayColumn extends React.Component {
       let continuesPrior = startsBefore(start, min)
       let continuesAfter = startsAfter(end, max)
 
-      let title = get(event, titleAccessor)
+      let title = get(event, titleAccessor);
+      if(this.props.showFormatter) {
+        title = this.props.showFormatter(event);
+      }
+
+      let wrapText = dates.diff(event.start, event.end, 'minutes') > step * 2;
+
       let label
       if (_continuesPrior && _continuesAfter) {
         label = messages.allDay
@@ -245,14 +252,15 @@ class DayColumn extends React.Component {
               'rbc-event-continues-later': continuesAfter,
               'rbc-event-continues-day-prior': _continuesPrior,
               'rbc-event-continues-day-after': _continuesAfter,
+              'unavailableBlock': event.unavailable,
             })}
-            id={event.id}
+            id={event.key}
           >
             <input type="hidden" className="step-height" value={height / dates.diff(event.start, event.end)}/>
             <input type="hidden" className="step-top" value={top}/>
             <div className="rbc-event-content">
               {EventComponent ? (
-                <EventComponent event={event} title={title}/>
+                <EventComponent event={event} title={title} wrapText={wrapText}/>
               ) : (
                 title
               )}

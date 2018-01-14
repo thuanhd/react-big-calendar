@@ -148,6 +148,9 @@ button.rbc-input::-moz-focus-inner {
 .rbc-resizer::after {
   content: '=';
 }
+.rbc-event-contentsub.wrap-text {
+  white-space: normal;
+}
 .rbc-toolbar {
   display: -webkit-flex;
   display: -ms-flexbox;
