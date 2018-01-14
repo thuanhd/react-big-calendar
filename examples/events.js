@@ -2,7 +2,7 @@ export default [
   {
     key: 1,
     practitionerKey: 'p1',
-    data: 'FUCK',
+    data: 'FFFFAA',
     start: new Date(2018, 0, 13, 9, 0, 0),
     end: new Date(2018, 0, 13, 12, 0, 0),
     unavailable: true,
