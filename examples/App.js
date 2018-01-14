@@ -71,7 +71,7 @@ class Example extends React.Component {
 
   handleItemClicked(event) {
     alert(
-      event.title +
+      event.practitionerKey +
         '\n' +
         event.start.toLocaleTimeString() +
         '\n' +
