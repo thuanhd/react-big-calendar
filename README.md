@@ -49,7 +49,6 @@ import {HTCalendar} from 'ht-calendar'
               date={moment('2018-01-14').toDate()}
             />
 ```
-xem ví dụ ở repo này: https://github.com/thuanhd/ht-calendar
 
 ## Chạy examples local
 
