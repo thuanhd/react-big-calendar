@@ -65,10 +65,10 @@ xem ví dụ ở repo này: https://github.com/thuanhd/ht-calendar
 | `data` | `event[]` | Các events được hiển thị trên Calendar | `[{id:1,title:'Khám sức khỏe',start: new Date(2018,0,1,10,30,0),end: new Date(2018,0,1,12,45,0),group:'Mr An'}]` |
 | `date` | `Date` | Ngày hiện tại (giá trị sẽ được highlight là ngày hiện tại trên calendar) | `new Date()` |
 | `timeSlot` | `number` | ???? | `????` |
+| `scale` | `number` | ???? | `?????` |
 | `workingHourRange` | `Object({from:number, to:number})` | Thời gian làm việc trong một ngày (những cell nằm ngoài thời gian làm việc sẽ có màu xám) | `{from:8,to:17}` từ 8 giờ sáng đến 5 giờ chiều |
 | `dayOffs` | `number[]` | Các ngày nghỉ trong tuần từ thứ 2 đến chủ nhật theo thứ tự từ số 1 đến số 7 | `[6,7]` (thứ 7 và chủ nhật) |
 | `practitioners` | `practitioner[]` | Các nhóm muốn hiển thị trên Calendar | `[{key: 'p1',value: 'John Cena',workingHours: {from: 9,to: 12,}},{key: 'p2',value: 'Taka', workingHours: { from: 14, to: 17, }}]` |
-| `scale` | `number` | ???? | `?????` |
 
 
 
