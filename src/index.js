@@ -85,13 +85,17 @@ class DndCalendar extends React.Component {
 
   moveEvent({event, start, end, practitioner}) {
     const updatedEvent = {...event, start, end}
-    if (practitioner)
-      updatedEvent.practitionerKey = practitioner && practitioner.key;
-    this.props.onItemChanged && this.props.onItemChanged(updatedEvent)
+    if (!practitioner) {
+      practitioner = this.props.practitioners.filter(p => p.key === event.practitionerKey)[0];
+    }
+    updatedEvent.practitionerKey = practitioner.key;
+    this.props.onItemChanged && this.props.onItemChanged(updatedEvent, practitioner)
   }
 
   selectEvent(event) {
-    this.props.onItemClicked && this.props.onItemClicked(event)
+    let practitioner = this.props.practitioners.filter(p => p.key === event.practitionerKey)[0];
+
+    this.props.onItemClicked && this.props.onItemClicked(event, practitioner)
   }
 
   selectCell(slotInfo) {

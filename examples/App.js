@@ -30,7 +30,7 @@ class Example extends React.Component {
             <div className="view-source" />
             <HTCalendar
               timeSlot={4}
-              scale={7}
+              scale={5}
               dayOffs={[2,4]}
               practitioners={[{
                 key: 'p1',
@@ -47,12 +47,12 @@ class Example extends React.Component {
                   to: 17,
                 }
               }]}
-              onItemChanged={event => this.handleItemChanged(event)}
-              onItemClicked={event => this.handleItemClicked(event)}
+              onItemChanged={(event, practitioner) => this.handleItemChanged(event, practitioner)}
+              onItemClicked={(event, practitioner) => this.handleItemClicked(event, practitioner)}
               onNewItemClicked={event => this.onNewItemClicked(event)}
               data={data}
               showFormatter={(event) => this.formater(event)}
-              //date={moment('2018-02-14').toDate()}
+              date={moment('2018-01-14').toDate()}
             />
           </div>
         </div>
@@ -60,7 +60,8 @@ class Example extends React.Component {
     )
   }
 
-  handleItemChanged(event) {
+  handleItemChanged(event, practitioner) {
+    console.log(practitioner);
     for(var i =0 ;i<this.state.data.length;i++){
       if(this.state.data[i].key === event.key){
         this.state.data[i] = {...event};
@@ -69,9 +70,10 @@ class Example extends React.Component {
     this.forceUpdate();
   }
 
-  handleItemClicked(event) {
+  handleItemClicked(event, practitioner) {
+    console.log(practitioner);
     alert(
-      event.practitionerKey +
+      practitioner.value +
         '\n' +
         event.start.toLocaleTimeString() +
         '\n' +
