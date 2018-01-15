@@ -79,7 +79,7 @@ Mỗi `event` gồm các field như bên dưới:
  * `title` (type: `string`): Tiêu đề của `event`
  * `start` (type: `Date`): Thời điểm bắt đầu của `event`
  * `end` (type: `Date`): Thời điểm kết thúc của `event`
- * `group` (type: `string`): định danh nhóm của `event`
+ * `practitionerKey` (type: `string`): định danh nhóm của `event`
  * `unavailable` (type: `boolean`): is unavailable của một `event`, div chứa `event` sẽ có thêm class `unavailableBlock` nếu field này bằng `true`
  
  ### object practitioner
